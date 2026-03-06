@@ -2,7 +2,6 @@
 
 import { useThemeStore } from "@/stores/ThemeStore"
 import { ThemeProvider, createTheme } from "@mui/material"
-import { useEffect, useState } from "react"
 import { light, dark } from "@leoopardo/design-tokens"
 
 interface IThemeModeProvider {
@@ -12,16 +11,11 @@ interface IThemeModeProvider {
 const ThemeModeProvider = ({ children }: IThemeModeProvider) => {
   const { currentTheme } = useThemeStore()
   const theme = currentTheme === "light" ? light : dark
-  const [isMounted, setIsMounted] = useState<boolean>(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
 
   const customizeTheme = createTheme({
     palette: {
         mode: currentTheme,
-        background: theme.bg,
+        background: {default: theme.bg.default, paper: theme.bg.default},
         primary: theme.colors.green,
         common: {black: theme.colors.black, white: theme.colors.white},
         text: {primary: theme.fg.default, secondary: theme.fg.muted},
@@ -42,12 +36,7 @@ const ThemeModeProvider = ({ children }: IThemeModeProvider) => {
         body1: theme.body,
         body2: theme.body
     }
-
   })
-
-  if (!isMounted) {
-    return
-  }
 
   return <ThemeProvider theme={customizeTheme}>{children}</ThemeProvider>
 }
